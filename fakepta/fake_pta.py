@@ -653,18 +653,24 @@ def make_fake_array(npsrs=25, Tobs=None, ntoas=None, gaps=True, toaerr=None, pdi
     return psrs
 
 # Plot sky positions of pulsars
-def plot_pta(psrs, plot_name=True):
-
+def plot_pta(psrs, plot_name=True, filename=None):
     ax = plt.axes(projection='mollweide')
-    ax.grid(True, **{'alpha':0.25})
+    ax.grid(True, **{'alpha': 0.25})
     plt.xticks(np.pi - np.linspace(0., 2*np.pi, 5), ['0h', '6h', '12h', '18h', '24h'], fontsize=14)
     plt.yticks(fontsize=14)
+    
     for psr in psrs:
         s = 50 * (10**(-6) / np.mean(psr.toaerrs))
         plt.scatter(np.pi - np.array(psr.phi), np.pi/2 - np.array(psr.theta), marker=(5, 1), s=s, color='r')
         if plot_name:
             plt.annotate(psr.name, (np.pi - psr.phi + 0.05, np.pi/2 - psr.theta - 0.1), color='k', fontsize=10)
-    plt.show()
+    
+    if filename:
+        plt.savefig(filename, bbox_inches='tight')
+        print(f"Plot saved as {filename}")
+    else:
+        plt.show()
+
 
 # Copy existing array
 def copy_array(psrs, custom_noisedict, custom_models=None):
